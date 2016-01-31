@@ -42,6 +42,8 @@ public enum Img implements FilenameProvider {
 	DOCFETCHER_64 ("docfetcher64.png"),
 	DOCFETCHER_128 ("docfetcher128.png"),
 	
+	LION_LOGO("lion_logo.png"),
+	
 	HELP ("help.gif"),
 	INFO ("info.gif"),
 	PREFERENCES ("preferences.gif"),

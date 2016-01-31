@@ -67,6 +67,7 @@ import net.sourceforge.docfetcher.util.annotations.Nullable;
 import net.sourceforge.docfetcher.util.collect.AlphanumComparator;
 import net.sourceforge.docfetcher.util.collect.ListMap;
 import net.sourceforge.docfetcher.util.gui.CocoaUIEnhancer;
+import net.sourceforge.docfetcher.util.gui.Col;
 import net.sourceforge.docfetcher.util.gui.FormDataFactory;
 import net.sourceforge.docfetcher.util.gui.LazyImageCache;
 import net.sourceforge.docfetcher.util.gui.dialog.InfoDialog;
@@ -186,7 +187,8 @@ public final class Application {
 		File confPathOverride = null;
 		File swtLibDir = null;
 		try {
-			Properties pathProps = CharsetDetectorHelper.load(new File("misc", "paths.txt"));
+			 
+			Properties pathProps = CharsetDetectorHelper.load(new File("build/DocFetcher-1.1.16/misc", "paths.txt"));
 			confPathOverride = toFile(pathProps, "settings");
 			IndexRegistry.indexPathOverride = toFile(pathProps, "indexes");
 			swtLibDir = toFile(pathProps, "swt");
@@ -225,11 +227,14 @@ public final class Application {
 			swtLibSuffix += "64";
 		else
 			swtLibSuffix += "32";
-		if (swtLibDir == null)
+		if (swtLibDir == null){
 			swtLibDir = new File(AppUtil.getAppDataDir(), (AppUtil.isPortable() ? "lib/swt/" : "swt/") + swtLibSuffix);
+			System.out.println("debug_ahp: SWT LOC"+swtLibDir.toString());
+		}
 		else
 			swtLibDir = new File(swtLibDir, swtLibSuffix);
 		swtLibDir.mkdirs(); // SWT won't recognize the path if it doesn't exist
+		System.out.println("debug_ahp: SWT lib path: "+Util.getAbsPath(swtLibDir));
 		System.setProperty("swt.library.path", Util.getAbsPath(swtLibDir));
 		
 		// Load program configuration and preferences
@@ -250,13 +255,18 @@ public final class Application {
 
 		// Determine shell title
 		String shellTitle;
-		if (SystemConf.Bool.IsDevelopmentVersion.get())
+		if (SystemConf.Bool.IsDevelopmentVersion.get()){
+			System.out.println("Using SystemConf");
 			shellTitle = SystemConf.Str.ProgramName.get();
-		else
+		}
+		else{
+			System.out.println("Using ProgramConf");
 			shellTitle = ProgramConf.Str.AppName.get();
-
+		}
+		System.out.println("debug_ahp: SWT shelltitle = "+shellTitle);
 		// Load index registry; create display and shell
 		Display.setAppName(shellTitle); // must be called *before* the display is created
+		
 		Display display = new Display();
 		AppUtil.setDisplay(display);
 		shell = new Shell(display);
@@ -272,7 +282,7 @@ public final class Application {
 		// Set shell icons, must be done *after* loading the images
 		shell.setImages(new Image[] {
 			Img.DOCFETCHER_16.get(), Img.DOCFETCHER_32.get(),
-			Img.DOCFETCHER_48.get(), Img.DOCFETCHER_64.get(),
+			Img.DOCFETCHER_48.get(), Img.LION_LOGO.get(),
 			Img.DOCFETCHER_128.get()});
 
 		// Set default uncaught exception handler

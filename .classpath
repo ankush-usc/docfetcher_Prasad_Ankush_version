@@ -61,5 +61,6 @@
 	<classpathentry kind="lib" path="lib/poi/poi-scratchpad-3.13-20150929.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io/commons-io-2.4.jar" sourcepath="lib/commons-io/commons-io-2.4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jericho-html/jericho-html-3.4.jar" sourcepath="lib/jericho-html/jericho-html-3.4-src.zip"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SWT_doc_ahp"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

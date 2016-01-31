@@ -85,6 +85,12 @@ public final class SystemConf {
 			return value;
 		}
 		public void load(String str) {
+			try{
+				int a=10/0;
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 			value = str;
 		}
 		public File getFile() {

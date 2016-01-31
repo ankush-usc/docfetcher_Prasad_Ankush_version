@@ -15,6 +15,7 @@ import net.sourceforge.docfetcher.enums.Img;
 import net.sourceforge.docfetcher.util.Util;
 import net.sourceforge.docfetcher.util.annotations.NotNull;
 import net.sourceforge.docfetcher.util.annotations.Nullable;
+import net.sourceforge.docfetcher.util.gui.Col;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -292,8 +293,12 @@ public abstract class TwoFormExpander extends Composite {
 	}
 	
 	public final void setTopText(@NotNull String text) {
-		formTop0.setText(text);
-		formTop.setText(text);
+	    /* author : AHP
+	     *  As we have to print only File Type Label as blue, we shall send a color command
+	     *  to indicate the label to print in blue. 
+	     */
+		formTop0.setText("colchange:"+text);		
+		formTop.setText("colchange:"+text);
 	}
 	
 	public final void setBottomText(@NotNull String text) {

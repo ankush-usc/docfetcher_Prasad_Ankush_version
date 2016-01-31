@@ -134,10 +134,10 @@ public enum Msg {
 		"Label for the filter control on the left of the GUI that allows the " +
 		"user to filter the search results by filesize."),
 	document_types (
-		"Document Types",
+		"File Types",
 		"Label for the filter control on the left of the GUI that allows the " +
 		"user to filter the search results by document type."),
-	search_scope ("Search Scope",
+	search_scope ("SEARCH SCOPE",
 		"Label for the control on the left of the GUI that allows the user " +
 		"to filter the search results by location, and to perform various " +
 		"index-related operations, such as creating new indexes."),
@@ -149,6 +149,7 @@ public enum Msg {
 		"Context menu entry for inverting the check states of a list of checkboxes."),
 	
 	// File types
+	filetype_DR("DR Test",Comments.filetype),
 	filetype_abi ("AbiWord (abw, abw.gz, zabw)", Comments.filetype),
 	filetype_chm ("MS Compiled HTML Help (chm)", Comments.filetype),
 	filetype_doc ("MS Word (doc)", Comments.filetype),
@@ -171,6 +172,7 @@ public enum Msg {
 	filetype_txt ("Plain Text", Comments.filetype),
 	filetype_flac ("FLAC (flac)", Comments.filetype),
 	filetype_epub ("EPUB (epub)", Comments.filetype),
+	
 	
 	// Search scope context menu entries
 	create_index_from (

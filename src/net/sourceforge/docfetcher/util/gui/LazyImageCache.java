@@ -89,6 +89,7 @@ public final class LazyImageCache {
 		LazyList<File> missingFiles = new LazyList<File>();
 		for (FilenameProvider provider : clazz.getEnumConstants()) {
 			File file = new File(imageDir, provider.getFilename());
+			
 			if (!file.isFile())
 				missingFiles.add(file);
 		}

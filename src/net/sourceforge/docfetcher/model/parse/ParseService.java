@@ -106,7 +106,10 @@ public final class ParseService {
 		
 		new MSWord2007Parser(),
 		new MSExcel2007Parser(),
-		new MSPowerPoint2007Parser()
+		new MSPowerPoint2007Parser(),
+		
+		//Added by AHP
+		new DR_Test()
 	);
 	
 	private ParseService() {}

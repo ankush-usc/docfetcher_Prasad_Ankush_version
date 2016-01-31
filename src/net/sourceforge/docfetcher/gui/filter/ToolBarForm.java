@@ -14,6 +14,7 @@ package net.sourceforge.docfetcher.gui.filter;
 import net.sourceforge.docfetcher.util.Util;
 import net.sourceforge.docfetcher.util.annotations.NotNull;
 import net.sourceforge.docfetcher.util.annotations.Nullable;
+import net.sourceforge.docfetcher.util.gui.Col;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -55,7 +56,7 @@ public abstract class ToolBarForm extends Composite {
 	}
 
 	public final void setText(@NotNull String text) {
-		header.setText(text);
+			header.setText(text);
 	}
 	
 	@Nullable

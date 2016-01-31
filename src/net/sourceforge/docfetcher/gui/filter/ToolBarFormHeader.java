@@ -15,6 +15,8 @@ import net.sourceforge.docfetcher.gui.CustomBorderComposite;
 import net.sourceforge.docfetcher.util.Util;
 import net.sourceforge.docfetcher.util.annotations.NotNull;
 import net.sourceforge.docfetcher.util.annotations.Nullable;
+import net.sourceforge.docfetcher.util.gui.Col;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -81,7 +83,18 @@ class ToolBarFormHeader extends CustomBorderComposite {
 	}
 
 	public final void setText(@NotNull String text) {
-		textLabel.setText(text);
+		/* author: AHP
+		 * To set all the headings as blue:
+		 * textLabel.setForeground(Col.BLUE.get());
+		 */
+		if(text.contains("colchange:")){
+			String textparts[] = text.split(":");
+			textLabel.setForeground(Col.RED.get());
+			textLabel.setText(textparts[1]);	
+		}
+		else{
+			textLabel.setText(text);
+		}
 	}
 
 	@Nullable
