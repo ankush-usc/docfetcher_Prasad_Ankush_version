@@ -18,10 +18,16 @@ public final class Range {
 	
 	public final int start;
 	public final int length;
-	
-	Range(int start, int length) {
+	public final int r;
+	public final int g;
+	public final int b;
+	Range(int start, int length,int r,int g,int b) {
 		this.start = start;
 		this.length = length;
+		this.r = r;
+		this.g = g;
+		this.b = b;
 	}
+	
 
 }

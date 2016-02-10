@@ -12,11 +12,16 @@
 package net.sourceforge.docfetcher.model.search;
 
 import java.io.File;
+import org.eclipse.swt.graphics.Color;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -127,6 +132,8 @@ public final class Searcher {
 	
 	private final Lock readLock;
 	private final Lock writeLock;
+	
+	
 
 	/**
 	 * This method should not be called by clients. Use
@@ -259,6 +266,7 @@ public final class Searcher {
 		// Create Lucene query
 		QueryWrapper queryWrapper = createQuery(queryString);
 		Query query = queryWrapper.query;
+			
 		boolean isPhraseQuery = queryWrapper.isPhraseQuery;
 		
 		/*
@@ -495,6 +503,7 @@ public final class Searcher {
 		PhraseDetectingQueryParser queryParser = new PhraseDetectingQueryParser(
 			IndexRegistry.LUCENE_VERSION, Fields.CONTENT.key(), IndexRegistry.getAnalyzer());
 		queryParser.setAllowLeadingWildcard(true);
+		System.out.println("Searcher_ahp: queryparser contents: "+queryString);
 		RewriteMethod rewriteMethod = MultiTermQuery.SCORING_BOOLEAN_QUERY_REWRITE;
 		queryParser.setMultiTermRewriteMethod(rewriteMethod);
 		if (!SettingsConf.Bool.UseOrOperator.get())
@@ -503,6 +512,8 @@ public final class Searcher {
 		try {
 			Query query = queryParser.parse(queryString);
 			boolean isPhraseQuery = queryParser.isPhraseQuery();
+			/* AHP: Hash of colors here */
+			
 			return new QueryWrapper(query, isPhraseQuery);
 		}
 		catch (IllegalArgumentException e) {

@@ -147,7 +147,6 @@ public enum Msg {
 	invert_check_states (
 		"Invert Check States",
 		"Context menu entry for inverting the check states of a list of checkboxes."),
-	
 	// File types
 	filetype_DR("DR Test",Comments.filetype),
 	filetype_abi ("AbiWord (abw, abw.gz, zabw)", Comments.filetype),

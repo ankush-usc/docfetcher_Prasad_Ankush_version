@@ -12,8 +12,12 @@
 package net.sourceforge.docfetcher.model.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import net.sourceforge.docfetcher.model.Fields;
 import net.sourceforge.docfetcher.model.IndexRegistry;
@@ -27,6 +31,7 @@ import net.sourceforge.docfetcher.util.annotations.VisibleForPackageGroup;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Formatter;
 import org.apache.lucene.search.highlight.Highlighter;
@@ -40,6 +45,7 @@ import org.apache.lucene.search.vectorhighlight.FieldQuery;
 import org.apache.lucene.search.vectorhighlight.FieldTermStack;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.eclipse.swt.graphics.Color;
 
 import com.google.common.io.Closeables;
 
@@ -48,7 +54,8 @@ import com.google.common.io.Closeables;
  */
 @VisibleForPackageGroup
 public final class HighlightService {
-	
+	public static Map<String,int[]> key_color_mapper = new HashMap<String,int[]>();
+
 	private HighlightService() {
 	}
 	
@@ -60,6 +67,18 @@ public final class HighlightService {
 			throws CheckedOutOfMemoryError {
 		text = trimDocument(text);
 		List<Range> ranges;
+		/* Construct color hash */
+		
+		String keystring = query.toString("content");
+		String keys[] = keystring.split(" ");
+		for(String key:keys){
+			int[] a = new int[3];
+			Random rn = new Random();
+			a[0]= rn.nextInt(200);
+			a[1]= rn.nextInt(200);
+			a[2] = rn.nextInt(200);
+ 			key_color_mapper.put(key, a);
+		}
 		if (isPhraseQuery)
 			ranges = highlightPhrases(query, text);
 		else
@@ -127,9 +146,27 @@ public final class HighlightService {
 			
 			List<Range> ranges = new ArrayList<Range> (infoList.size());
 			for (WeightedPhraseInfo phraseInfo : infoList) {
+				/* AHP: find this weightedphrase */
+				/* Phrase info has string-range */
+				/* Compare your hash and insert right color here */
+				String string_to_hunt = phraseInfo.toString();
+				int c1=0;
+				int c2=0;
+				int c3=0;
+				for(String keys: key_color_mapper.keySet()){
+					int[] temp = key_color_mapper.get(keys);
+					keys = keys + "(";
+					if(string_to_hunt.contains(keys)){
+						c1 = temp[0];
+						c2 = temp[1];
+						c3 = temp[2];
+						break;
+					}
+				}
+				System.out.println("HighlightService_ahp: colors c1 = "+c1+" , c2 = "+c2+ " c3 = "+c3);	
 				int start = phraseInfo.getStartOffset();
 				int end = phraseInfo.getEndOffset();
-				ranges.add(new Range(start, end - start));
+				ranges.add(new Range(start, end - start,c1,c2,c3));
 			}
 			return ranges;
 		}
@@ -158,13 +195,28 @@ public final class HighlightService {
 					Token token = tokenGroup.getToken(i);
 					if (tokenGroup.getScore(i) == 0)
 						continue;
+					/* AHP: find what is our token */
+					int c1=0;
+					int c2=0;
+					int c3=0;
+					for(String keys: key_color_mapper.keySet()){
+						int[] temp = key_color_mapper.get(keys);
+						if((token.toString()).contains(keys)){
+							c1 = temp[0];
+							c2 = temp[1];
+							c3 = temp[2];
+							break;
+						}
+					}
+					System.out.println("HighlightService_ahp: Token ="+token.toString());
 					int start = token.startOffset();
 					int end = token.endOffset();
-					ranges.add(new Range(start, end - start));
+					ranges.add(new Range(start, end - start,c1,c2,c3));
 				}
 				return null;
 			}
 		};
+		/* AHP investigate here on changing text colors*/
 		String key = Fields.CONTENT.key();
 		Highlighter highlighter = new Highlighter(nullFormatter, new QueryScorer(query, key));
 		highlighter.setMaxDocCharsToAnalyze(Integer.MAX_VALUE);
@@ -174,7 +226,7 @@ public final class HighlightService {
 			 * This has a return value, but we ignore it since we only want the
 			 * offsets. Might throw an OutOfMemoryError.
 			 */
-			highlighter.getBestFragment(IndexRegistry.getAnalyzer(), key, text);
+			 highlighter.getBestFragment(IndexRegistry.getAnalyzer(), key, text);
 		}
 		catch (OutOfMemoryError e) {
 			throw new CheckedOutOfMemoryError(e);

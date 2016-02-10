@@ -12,8 +12,11 @@
 package net.sourceforge.docfetcher.gui.preview;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.docfetcher.enums.Img;
 import net.sourceforge.docfetcher.enums.Msg;
@@ -39,6 +42,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.widgets.Composite;
 
+import java.util.Random;
+
 /**
  * @author Tran Nam Quang
  */
@@ -55,6 +60,8 @@ final class HighlightingText {
 	private Font normalFont;
 	private Font monoFont;
 	
+	private Boolean eventtriggered_colorchange = false;
+
 	public HighlightingText(@NotNull Composite parent) {
 		int style = SWT.FULL_SELECTION | SWT.READ_ONLY | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER;
 		textViewer = new StyledText(parent, style);
@@ -66,6 +73,7 @@ final class HighlightingText {
 		SettingsConf.IntArray.PreviewHighlighting.evtChanged.add(new Event.Listener<int[]>() {
 			public void update(int[] eventData) {
 				Color oldColor = highlightColor;
+				eventtriggered_colorchange = true;
 				setHighlightColorAndStyle();
 				updateHighlighting();
 				oldColor.dispose();
@@ -121,7 +129,16 @@ final class HighlightingText {
 	private void setHighlightColorAndStyle() {
 		int[] rgb = SettingsConf.IntArray.PreviewHighlighting.get();
 		highlightColor = new Color(textViewer.getDisplay(), rgb[0], rgb[1], rgb[2]);
+		/*Random rn = new Random();
+		int c1 = rn.nextInt(256);
+		int c2 = rn.nextInt(256);
+		int c3 = rn.nextInt(256);
+		System.out.println("Highlighting Text_ahp: random color generated = "+c1+","+c2+","+c3);
+		highlightColor = new Color(textViewer.getDisplay(),c1,c2,c3); */
 		highlightStyle = new StyleRange(0, 0, null, highlightColor);
+		
+		/* Prepare hash of colors */
+
 	}
 	
 	@NotNull
@@ -157,6 +174,7 @@ final class HighlightingText {
 			return;
 		
 		int[] rangeArray = getRangeArray(string, 0);
+		/* AHP: what if the string to range mapping done here? */
 		if (SettingsConf.Bool.HighlightingEnabled.get()) {
 			StyleRange[] styles = getStylesArray(string);
 			textViewer.setStyleRanges(rangeArray, styles);
@@ -312,7 +330,20 @@ final class HighlightingText {
 	@NotNull
 	private StyleRange[] getStylesArray(@NotNull HighlightedString string) {
 		StyleRange[] styles = new StyleRange[string.getRangeCount()];
-		Arrays.fill(styles, highlightStyle);
+		List<Range> range_ahp = string.getRanges();
+		Range[] range_arr_ahp = range_ahp.toArray(new Range[range_ahp.size()]);
+
+		/* AHP: changing code to reflect individual styles */
+		for(int i=0;i<string.getRangeCount();i++){
+			highlightColor = new Color(textViewer.getDisplay(),range_arr_ahp[i].r,range_arr_ahp[i].g,range_arr_ahp[i].b);
+			highlightStyle = new StyleRange(0, 0, null, highlightColor);
+			styles[i] = highlightStyle;
+		}
+		/* AHP: Color change reflects here 
+		highlightColor = new Color(textViewer.getDisplay(),255,0,0); 
+		highlightStyle = new StyleRange(0, 0, null, highlightColor);
+		*/
+		//Arrays.fill(styles, highlightStyle);
 		return styles;
 	}
 	

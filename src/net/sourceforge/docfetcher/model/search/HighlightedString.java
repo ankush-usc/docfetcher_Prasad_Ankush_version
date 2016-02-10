@@ -69,8 +69,7 @@ public final class HighlightedString {
 		// We must create new Range objects here, otherwise we'll modify the
 		// given highlighted string
 		for (Range range : otherString.ranges)
-			ranges.add(new Range(range.start + length, range.length));
-		
+			ranges.add(new Range(range.start + length, range.length,range.r,range.g,range.b));
 		length += otherString.length;
 	}
 
