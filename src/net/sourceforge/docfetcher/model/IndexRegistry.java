@@ -61,6 +61,7 @@ import org.apache.lucene.analysis.ReusableAnalyzerBase;
 import org.apache.lucene.analysis.StopFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.search.BooleanQuery;
@@ -137,11 +138,17 @@ public final class IndexRegistry {
 	public static Analyzer getAnalyzer() {
 		/* The analyzer is created lazily to ensure that the program settings
 		 * have already been loaded. */
+
 		if (analyzer == null) {
 			if (ProgramConf.Int.Analyzer.get() == 1) {
 				analyzer = new SourceCodeAnalyzer(LUCENE_VERSION);
 			} else {
-				analyzer = new StandardAnalyzer(LUCENE_VERSION, Collections.EMPTY_SET);
+				System.out.println("IndexRegistry_ahp: casesensitive/insensitive indexing");
+				//analyzer = new StandardAnalyzer(LUCENE_VERSION, Collections.EMPTY_SET);
+				analyzer = new WhitespaceAnalyzer(LUCENE_VERSION);
+				/*Author AHP: Standard Analyzer uses LowercaseFilter and thus, this lower cases queries and data
+				 * and we get the feeling of case-insensitive search.
+				 */
 			}
 		}
 		return analyzer;

@@ -268,6 +268,7 @@ public final class Searcher {
 		Query query = queryWrapper.query;
 			
 		boolean isPhraseQuery = queryWrapper.isPhraseQuery;
+		boolean isCaseSensitive = queryWrapper.isCaseSensitive;
 		
 		/*
 		 * Notes regarding the following code:
@@ -452,6 +453,7 @@ public final class Searcher {
 			
 			// Perform search; might throw OutOfMemoryError
 			int maxResults = (webQuery.pageIndex + 1) * PAGE_SIZE;
+			System.out.println("Searcher_ahp: Calling Lucene search: with query"+query);
 			TopDocs topDocs = luceneSearcher.search(query, filter, maxResults);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
 			
@@ -509,12 +511,24 @@ public final class Searcher {
 		if (!SettingsConf.Bool.UseOrOperator.get())
 			queryParser.setDefaultOperator(QueryParser.AND_OPERATOR);
 		
-		try {
+		/* Author AHP: added functionality to check for case sensitiveness */
+		if(queryString.charAt(0)== '\'' && queryString.charAt(queryString.length()-1)=='\'' ){
+			/* Author AHP: remove quotes and send the string to parse on removal of quotes
+			 * and setting caseSensitive flag */
+			queryParser.set_sensitive(true);
+			queryString = queryString.substring(1,queryString.length()-1);
+			System.out.println("Searcher_ahp: querystring after processing= "+queryString);
+			System.out.println("Is this phrase = "+queryParser.isPhraseQuery());
+		}
+		
+		try { 
+			
 			Query query = queryParser.parse(queryString);
 			boolean isPhraseQuery = queryParser.isPhraseQuery();
+			boolean isCaseSenstive = queryParser.isCaseSensitive();
 			/* AHP: Hash of colors here */
 			
-			return new QueryWrapper(query, isPhraseQuery);
+			return new QueryWrapper(query, isPhraseQuery,isCaseSenstive);
 		}
 		catch (IllegalArgumentException e) {
 			/*
@@ -603,10 +617,12 @@ public final class Searcher {
 	private static final class QueryWrapper {
 		public final Query query;
 		public final boolean isPhraseQuery;
+		public final boolean isCaseSensitive;
 		
-		private QueryWrapper(@NotNull Query query, boolean isPhraseQuery) {
+		private QueryWrapper(@NotNull Query query, boolean isPhraseQuery, boolean isCaseSensitive) {
 			this.query = Util.checkNotNull(query);
 			this.isPhraseQuery = isPhraseQuery;
+			this.isCaseSensitive = isCaseSensitive;
 		}
 	}
 

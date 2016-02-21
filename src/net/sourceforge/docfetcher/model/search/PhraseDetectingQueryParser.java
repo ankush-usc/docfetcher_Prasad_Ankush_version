@@ -33,6 +33,7 @@ public final class PhraseDetectingQueryParser extends QueryParser {
 	 */
 	
 	private boolean isPhraseQuery = true;
+	private boolean isCaseSensitive = false;
 	
 	public PhraseDetectingQueryParser(	Version luceneVersion,
 										String defaultField,
@@ -44,6 +45,14 @@ public final class PhraseDetectingQueryParser extends QueryParser {
 		return isPhraseQuery;
 	}
 
+	public boolean isCaseSensitive(){
+		return isCaseSensitive;
+	}
+	
+	public void set_sensitive(boolean value){
+		isCaseSensitive = value;
+	}
+	
 	protected Query newFuzzyQuery(	Term term,
 									float minimumSimilarity,
 									int prefixLength) {

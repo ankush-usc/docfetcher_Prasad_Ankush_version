@@ -29,6 +29,7 @@ import net.sourceforge.docfetcher.util.annotations.NotNull;
 import net.sourceforge.docfetcher.util.annotations.VisibleForPackageGroup;
 
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -45,6 +46,7 @@ import org.apache.lucene.search.vectorhighlight.FieldQuery;
 import org.apache.lucene.search.vectorhighlight.FieldTermStack;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
 import org.eclipse.swt.graphics.Color;
 
 import com.google.common.io.Closeables;
@@ -227,6 +229,7 @@ public final class HighlightService {
 			 * offsets. Might throw an OutOfMemoryError.
 			 */
 			 highlighter.getBestFragment(IndexRegistry.getAnalyzer(), key, text);
+			//highlighter.getBestFragment(new StandardAnalyzer(Version.LUCENE_30), key,text);
 		}
 		catch (OutOfMemoryError e) {
 			throw new CheckedOutOfMemoryError(e);

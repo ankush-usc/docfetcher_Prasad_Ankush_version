@@ -51,10 +51,11 @@ public final class HighlightServiceTest {
 	public void testPhraseHighlighter() throws Exception {
 		// Create index
 		Directory directory = new RAMDirectory();
-		Analyzer analyzer = new StandardAnalyzer(
+		/* Analyzer analyzer = new StandardAnalyzer(
 				IndexRegistry.LUCENE_VERSION,
 				Collections.EMPTY_SET
-		);
+		); */
+		Analyzer analyzer = IndexRegistry.getAnalyzer();
 		IndexWriterAdapter writer = new IndexWriterAdapter(directory);
 		Document doc = new Document();
 		doc.add(new Field("content", "some text", Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS_OFFSETS));
